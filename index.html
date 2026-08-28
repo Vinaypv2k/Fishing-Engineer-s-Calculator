@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fishing Engineer's Calculator V4</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><div class=brand><div class=logo>FE</div><div><h1>Fishing Engineer's Calculator</h1><p>Well model • tubulars • fishing • hydraulics</p></div></div><div class=headerRight><span id=wellBadge>UNSAVED WELL</span><button class=ghost onclick="window.print()">Print</button></div></header>
+<div class=layout>
+<aside><div class=sideTitle>ENGINEERING SUITE</div>
+<button class="nav active" data-page=dashboard>⌂ <span>Dashboard</span></button>
+<button class=nav data-page=well>◉ <span>Well Model</span></button>
+<button class=nav data-page=string>▤ <span>String / BHA</span></button>
+<button class=nav data-page=tubular>◇ <span>Tubular Strength</span></button>
+<button class=nav data-page=fishing>⚓ <span>Fishing</span></button>
+<button class=nav data-page=hydraulics>≈ <span>Hydraulics</span></button>
+<button class=nav data-page=spotting>◒ <span>Spotting Pill</span></button>
+<div class=sideFoot><span>V4.0</span><small>Field engineering aid</small></div></aside>
+<main>
+<section id=dashboard class="page active"><div class=pageHead><div><small>WELL OVERVIEW</small><h2>Engineering Dashboard</h2></div><button onclick=resetAll() class=danger>Reset</button></div>
+<div class=kpis><div><small>MD</small><b id=kmd>—</b></div><div><small>TVD</small><b id=ktvd>—</b></div><div><small>Mud Weight</small><b id=kmw>—</b></div><div><small>Buoyancy Factor</small><b id=kbf>—</b></div></div>
+<div class=grid2><div class=card><h3>Load envelope</h3><div class=metric><span>Design pull margin</span><b id=kpull>—</b></div><div class=bar><i id=pbar></i></div><p id=pstatus>Enter tubular and string data.</p></div>
+<div class=card><h3>Hydraulics</h3><div class=metric><span>Total friction</span><b id=kfric>—</b></div><div class=metric><span>Spotting BHP</span><b id=kbphp>—</b></div></div></div>
+<div class=notice><b>Engineering status:</b> <span id=status>Waiting for inputs</span><br><small>Use approved company procedures and verified OEM/API data before operational decisions.</small></div>
+</section>
+
+<section id=well class=page><div class=pageHead><div><small>01 • WELL MODEL</small><h2>Well & Fluids</h2></div></div>
+<div class=card><h3>Well geometry</h3><div class=grid><label>Well / Hole ID (in)<input id=wHole></label><label>MD (ft)<input id=wMD></label><label>TVD (ft)<input id=wTVD></label><label>Inclination (°)<input id=wInc></label><label>Dogleg (°/100 ft)<input id=wDLS></label></div></div>
+<div class=card><h3>Fluid system</h3><div class=grid><label>Mud weight (ppg)<input id=wMW value=10></label><label>PV (cP)<input id=wPV value=20></label><label>YP (lb/100ft²)<input id=wYP value=15></label><label>Temperature (°F)<input id=wTemp></label></div><button onclick=calcWell()>Update Well Model</button><div id=wellOut class=result></div></div></section>
+
+<section id=string class=page><div class=pageHead><div><small>02 • STRING MODEL</small><h2>String / BHA Builder</h2></div></div>
+<div class=card><div class=grid compact><label>Component<input id=tName placeholder="2-7/8 Tubing"></label><label>OD (in)<input id=tOD></label><label>ID (in)<input id=tID></label><label>Weight (lb/ft)<input id=tPPF></label><label>Length (ft)<input id=tLen></label></div><button onclick=addComp>Add Component</button><button class=ghost onclick=clearComp>Clear</button></div>
+<div class=card><div class=tablewrap><table><thead><tr><th>Component</th><th>OD</th><th>ID</th><th>ppf</th><th>Length</th><th>Air Wt.</th><th>Vol.</th><th></th></tr></thead><tbody id=compBody></tbody></table></div><div id=stringOut class=summary>No components.</div></div></section>
+
+<section id=tubular class=page><div class=pageHead><div><small>03 • TUBULAR INTEGRITY</small><h2>Tubular Strength</h2></div></div>
+<div class=card><div class=grid><label>OD (in)<input id=uOD></label><label>ID (in)<input id=uID></label><label>Grade / SMYS (psi)<input id=uY></label><label>Connection efficiency (%)<input id=uEff value=100></label><label>Safety factor<input id=uSF value=.8></label><label>Internal pressure (psi)<input id=uPi></label><label>External pressure (psi)<input id=uPo></label><label>Axial load (lb)<input id=uAx></label></div><button onclick=calcTubular>Evaluate</button><div id=tubOut class=result></div></div>
+<div class=notice>V4 separates pipe-body screening from connection/weak-point limits. Combined loading and collapse require the applicable API calculation method and actual product data.</div></section>
+
+<section id=fishing class=page><div class=pageHead><div><small>04 • FISHING</small><h2>Fishing Operations</h2></div></div>
+<div class=grid2><div class=card><h3>Free-point stretch</h3><div class=grid><label>Load 1 (lb)<input id=fL1></label><label>Load 2 (lb)<input id=fL2></label><label>Stretch 1 (in)<input id=fS1></label><label>Stretch 2 (in)<input id=fS2></label><label>Reference length (ft)<input id=fLen></label><label>Pipe OD (in)<input id=fOD></label><label>Pipe ID (in)<input id=fID></label></div><button onclick=calcFree>Estimate</button><div id=freeOut class=result></div></div>
+<div class=card><h3>Overpull / jar plan</h3><div class=grid><label>String air weight (lb)<input id=jWt></label><label>Current hookload (lb)<input id=jHook></label><label>Pipe allowable (lb)<input id=jAllow></label><label>Safety factor<input id=jSF value=.8></label><label>Jar efficiency (%)<input id=jEff value=80></label><label>Impact factor (%)<input id=jImp value=70></label></div><button onclick=calcJar>Evaluate</button><div id=jarOut class=result></div></div></div></section>
+
+<section id=hydraulics class=page><div class=pageHead><div><small>05 • HYDRAULICS</small><h2>Hydraulics & Rheology</h2></div></div>
+<div class=card><div class=grid><label>Flow rate (gpm)<input id=hQ></label><label>Pipe ID (in)<input id=hID></label><label>Annulus OD / hole ID (in)<input id=hAD></label><label>Pipe length (ft)<input id=hPL></label><label>Annulus length (ft)<input id=hAL></label><label>PV (cP)<input id=hPV value=20></label><label>YP (lb/100ft²)<input id=hYP value=15></label></div><button onclick=calcHyd>Calculate</button><div id=hydOut class=result></div></div></section>
+
+<section id=spotting class=page><div class=pageHead><div><small>06 • SPOTTING JOB</small><h2>Spotting Pill Planner</h2></div></div>
+<div class=card><div class=grid><label>Hole ID (in)<input id=sHole></label><label>String OD (in)<input id=sOD></label><label>Pill volume (bbl)<input id=sVol></label><label>Pump rate (bbl/min)<input id=sRate></label><label>Base MW (ppg)<input id=sMW1></label><label>Pill MW (ppg)<input id=sMW2></label><label>TVD (ft)<input id=sTVD></label><label>String ΔP (psi)<input id=sDP1></label><label>Annulus ΔP (psi)<input id=sDP2></label><label>Surface pressure (psi)<input id=sSP></label></div><button onclick=calcSpot>Calculate Plan</button><div id=spotOut class=result></div></div></section>
+</main></div><footer>Fishing Engineer's Calculator V4 • Verify calculations before use</footer><script src=app.js></script></body></html>
